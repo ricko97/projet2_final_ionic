@@ -11,7 +11,7 @@ import {isLoggedIn} from "@/services/user";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    redirect: "/geolocation",
+    redirect: "/trips",
   },
   {
     path: "/login",
