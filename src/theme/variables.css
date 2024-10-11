@@ -1,2 +1,26 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
+
+:root {
+  /* Couleurs */
+  --blanc: #fff;
+  --gris-clair: #efefef;
+  --gris-sombre: #dedbd7ff;
+  --accent: #faa946ff;
+  --noir: #24201bff;
+  --secondaire: #db8c2cff;
+  --primaire: #de8518ff;
+}
+
+ion-content {
+  --background: var(--gris-clair);
+}
+
+ion-toolbar {
+  --background: var(--blanc);
+  --color: var(--noir);
+}
+
+ion-toolbar ion-title {
+  font-weight: 900;
+}
