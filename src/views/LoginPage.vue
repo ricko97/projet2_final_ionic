@@ -46,7 +46,7 @@ export default defineComponent({
           });
           loading.present().then(async () => {
             await setCurrentUser(response.data);
-            await router.replace("/geolocation");
+            await router.replace("/");
           });
 
         })
