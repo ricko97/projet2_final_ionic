@@ -142,9 +142,7 @@ import {
   IonFab,
   IonFabButton,
   IonFabList,
-  IonMenu,
-  IonMenuButton, createAnimation,
-} from "@ionic/vue";
+  IonMenuButton } from "@ionic/vue";
 import {defineComponent, ref} from "vue";
 import {
   add, exit, informationCircle, locate, navigateCircle, stopCircle
@@ -169,7 +167,6 @@ export default defineComponent({
     IonFab,
     IonFabButton,
     IonFabList,
-    IonMenu,
     IonMenuButton,
   },
   async ionViewDidEnter() {
@@ -210,6 +207,9 @@ export default defineComponent({
       this.tripName = data.tripName
       this.recordingTrip = true
 
+      this.toastInfo.message = "Trajet lancé! Capture des positions en cours..."
+      this.toastInfo.isOpen = true
+
       setInterval(() => {
         if(!this.recordingTrip)
           return
@@ -221,6 +221,7 @@ export default defineComponent({
       if(this.positions.length > 0){
         this.positions.splice(0);
       }
+      this.tripName = ""
     },
 
     stopTrip(){
@@ -229,11 +230,11 @@ export default defineComponent({
 
     async sendTrip() {
       //send positions to server
-      const response = await saveTrip(this.currentUser.userId, this.tripName, this.positions.map(pos => {
+      await saveTrip(this.currentUser.userId, this.tripName, this.positions.map(pos => {
         return {latitude: pos.latitude, longitude: pos.longitude}
       }))
 
-      this.toastInfo.message = `"Le trajet ${response.data.tripId} a été enregistré avec succès"`
+      this.toastInfo.message = `"Le trajet "${this.tripName}" a été enregistré avec succès"`
       this.toastInfo.isOpen = true
 
       this.resetPositions()
