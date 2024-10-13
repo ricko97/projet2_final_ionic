@@ -78,7 +78,7 @@ export const changePassword = async (
 
 export const getTripsByUserId = async (
     userId: string
-): Promise<AxiosResponse<GetTripsResponse>> => {
+): Promise<GetTripsResponse> => {
   return await axios.get(`${API_URL}/get-trips/${userId}`);
 };
 
