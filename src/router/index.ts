@@ -7,6 +7,7 @@ import LocationPage from "@/views/LocationPage.vue";
 import ParametrePage from "@/views/ParametrePage.vue";
 import TrajetPage from "@/views/TrajetPage.vue";
 import {isLoggedIn} from "@/services/user";
+import DetailsTrajetPage from "@/views/DetailsTrajetPage.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -37,6 +38,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/geolocation",
     name: "GéoLocalisation",
     component: LocationPage,
+  },
+  {
+    path: "/details/:tripId",
+    name: "Détails Trajet",
+    component: DetailsTrajetPage,
   },
 ];
 
