@@ -5,12 +5,6 @@
           <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
           </ion-buttons>
-        <ion-buttons slot="end">
-          <ion-button class="logout-button" @click="logout()"
-            ><ion-icon slot="start" aria-hidden="true" :ios="exit" :md="exit"></ion-icon>
-            Logout</ion-button
-          >
-        </ion-buttons>
         <ion-title>GéoLocalisation</ion-title>
       </ion-toolbar>
     </ion-header>
@@ -121,9 +115,8 @@
 </template>
 
 <script lang="ts">
-import router from "@/router";
 import {reverseGeocode, saveTrip} from "@/services/api";
-import {getCurrentUser, logoutUser} from "@/services/user";
+import {getCurrentUser} from "@/services/user";
 import { Geolocation } from "@capacitor/geolocation";
 import {
   IonContent,
@@ -132,7 +125,6 @@ import {
   IonTitle,
   IonToolbar,
   IonButtons,
-  IonButton,
   IonLabel,
   IonItem,
   IonIcon,
@@ -157,7 +149,6 @@ export default defineComponent({
     IonTitle,
     IonToolbar,
     IonButtons,
-    IonButton,
     IonLabel,
     IonItem,
     IonIcon,
@@ -238,11 +229,6 @@ export default defineComponent({
       this.toastInfo.isOpen = true
 
       this.resetPositions()
-    },
-
-    logout() {
-      logoutUser();
-      router.replace("/login");
     },
     readytoSend() {
       return !this.recordingTrip && this.positions.length > 0
