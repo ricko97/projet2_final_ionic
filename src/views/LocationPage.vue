@@ -170,8 +170,9 @@ export default defineComponent({
     const positions = ref([] as any[]);
     const toastInfo = ref({isOpen : false, message: ''})
     const recordingTrip = ref(false)
+    const tripName = ref("")
 
-    return { positions, toastInfo, recordingTrip,
+    return { positions, toastInfo, recordingTrip, tripName,
       exit, add, navigateCircle, stopCircle, informationCircle, locate};
   },
   methods: {
@@ -192,14 +193,13 @@ export default defineComponent({
         this.toastInfo.isOpen = true
         return false
       }
-
-      this.resetPositions()
-
       this.tripName = data.tripName
       this.recordingTrip = true
 
       this.toastInfo.message = "Trajet lancé! Capture des positions en cours..."
       this.toastInfo.isOpen = true
+
+      this.resetPositions()
 
       setInterval(() => {
         if(!this.recordingTrip)
@@ -236,7 +236,6 @@ export default defineComponent({
   },
   data() {
     return {
-      tripName: "",
       currentUser : {} as User
     };
   },
