@@ -21,12 +21,14 @@ import {
   IonTabButton,
   IonTabs,
   IonTitle,
+  IonItemSliding, IonItemOptions, IonItemOption,
   IonToolbar, IonRippleEffect,
-  IonToast, IonAlert, alertController,
+  IonToast, alertController,
+  IonRefresher, IonRefresherContent, RefresherCustomEvent,
 } from "@ionic/vue";
 import {defineComponent, ref} from "vue";
 import {
-  add, bookmarks, people, person, sadOutline,
+  add, bookmarks, people, person, sadOutline, locationSharp,
   shareSocial, trash, informationCircle, personCircleOutline
 } from "ionicons/icons";
 import {SharedTrip, Trip, User} from "@/services/models";
@@ -35,6 +37,15 @@ import {getCurrentUser} from "@/services/user";
 import router from "@/router";
 
 export default defineComponent({
+
+  components: {
+    IonItem, IonToast, IonItemSliding, IonItemOptions, IonItemOption,
+    IonMenuButton, IonChip, IonLabel, IonRippleEffect,
+    IonIcon, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar,
+    IonTabs, IonTab, IonTabBar, IonTabButton, IonList,
+    IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle,
+    IonRefresher, IonRefresherContent
+  },
   methods: {
     async showShareAlert(tripId: string) {
       const alert = await alertController.create({
@@ -113,23 +124,21 @@ export default defineComponent({
         })
       }
   },
-  components: {
-    IonAlert,
-    IonItem, IonToast,
-    IonMenuButton, IonChip, IonLabel, IonRippleEffect,
-    IonIcon, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar,
-    IonTabs, IonTab, IonTabBar, IonTabButton, IonList,
-    IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle
-  },
   setup(){
-    //const data: GetTripsResponse = ref({})
     const trips: Trip[] = ref([])
     const sharedTrips: SharedTrip[] = ref([])
     const toastInfo = ref({isOpen : false, message: ''})
 
+    const handleRefresh = (refreshAction, event: RefresherCustomEvent) => {
+      setTimeout(async () => {
+        refreshAction()
+        await event.target.complete();
+      }, 2000);
+    };
 
-    return {trips, sharedTrips, router, toastInfo,
-      sadOutline, personCircleOutline,
+
+    return {trips, sharedTrips, router, toastInfo, handleRefresh,
+      sadOutline, personCircleOutline, locationSharp,
       add, person, people, bookmarks, shareSocial, trash, informationCircle}
   },
   async ionViewDidEnter() {
@@ -161,6 +170,9 @@ export default defineComponent({
               </ion-toolbar>
             </ion-header>
             <ion-content :fullscreen="true">
+              <ion-refresher slot="fixed" @ionRefresh="handleRefresh(refreshTrips,$event)">
+                <ion-refresher-content></ion-refresher-content>
+              </ion-refresher>
               <ion-list v-if="trips.length > 0">
                 <ion-item-sliding v-for="(trip, index) in trips" :key="index">
                   <ion-item class="list-item">
@@ -182,7 +194,7 @@ export default defineComponent({
 
                       <ion-card-content >
                         <ion-chip>
-                          <ion-icon :icon="bookmarks" color="dark"></ion-icon>
+                          <ion-icon :icon="locationSharp" color="dark"></ion-icon>
                           <ion-label>{{ `${trip.locations.length} positions enregistrées` }}</ion-label>
                         </ion-chip>
                       </ion-card-content>
@@ -221,6 +233,9 @@ export default defineComponent({
               </ion-toolbar>
             </ion-header>
             <ion-content :fullscreen="true">
+              <ion-refresher slot="fixed" @ionRefresh="handleRefresh(refreshTrips,$event)">
+                <ion-refresher-content></ion-refresher-content>
+              </ion-refresher>
               <ion-list v-if="sharedTrips.length > 0">
                 <ion-item-sliding v-for="(trip, index) in sharedTrips" :key="index">
                   <ion-item class="list-item">
@@ -248,7 +263,7 @@ export default defineComponent({
 
                       <ion-card-content >
                         <ion-chip>
-                          <ion-icon :icon="bookmarks" color="dark"></ion-icon>
+                          <ion-icon :icon="locationSharp" color="dark"></ion-icon>
                           <ion-label>{{ `${trip.locations.length} positions enregistrées` }}</ion-label>
                         </ion-chip>
                       </ion-card-content>
@@ -288,29 +303,6 @@ export default defineComponent({
     </ion-content>
     <ion-toast :is-open="toastInfo.isOpen" :message="toastInfo.message" :icon="informationCircle"
                :duration="2000" @didDismiss="toastInfo.isOpen=false" class="toast-info"></ion-toast>
-    <ion-alert
-        class="start-trip-alert"
-        trigger="start-button"
-        :animated=true
-        :backdrop-dismiss=false
-        header="Nouveau trajet"
-        :buttons="[
-              {
-                text: 'Annuler',
-                cssClass: 'alert-button-cancel',
-              },
-              {
-                text: 'Partager',
-                cssClass: 'alert-button-confirm',
-                handler: shareTrip
-              },
-            ]"
-        :inputs="[{
-            placeholder: 'Addresse email du récepteur',
-            cssClass : 'trajet-input',
-            name: 'receiverEmail',
-          }]"
-    ></ion-alert>
   </ion-page>
 </template>
 
@@ -371,6 +363,5 @@ ion-item-options {
   align-items: center;
   height: 100vh;
 }
-
 
 </style>
