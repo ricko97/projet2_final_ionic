@@ -43,6 +43,15 @@ export interface Trip{
   tripId: string,
 }
 
+export interface SharedTrip{
+  pathName: string,
+  locations: Position[],
+  date: string,
+  tripId: string,
+  firstName: string,
+  lastName: string,
+}
+
 export interface MsgResponse {
   message: string;
 }
@@ -60,5 +69,5 @@ export interface SharedTripResponse {
 export interface GetTripsResponse{
   userId: string;
   trips: Trip[]
-  shareTripId: Trip[];
+  sharedTrips: SharedTrip[];
 }

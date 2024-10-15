@@ -33,17 +33,20 @@
       </ion-list>
       <ion-fab slot="fixed" vertical="bottom" horizontal="end">
         <ion-fab-button id="new-trip">
-          <ion-icon :icon="add" v-if="!recordingTrip" ></ion-icon>
+          <ion-icon :icon="add" v-show="!recordingTrip" ></ion-icon>
           <ion-spinner name="circular" v-if="recordingTrip"></ion-spinner>
         </ion-fab-button>
         <ion-fab-list side="top">
-          <ion-fab-button :class="[!recordingTrip ? 'disabled-fab-button' : '']"
-                          :disabled="!recordingTrip" id="stop-button" title="Arrêter le trajet">
-            <ion-icon :icon="stopCircle"></ion-icon>
-          </ion-fab-button>
-          <ion-fab-button :class="[recordingTrip ? 'disabled-fab-button' : '']"
-                          :disabled="recordingTrip" id="start-button" title="Lancer un trajet">
+          <ion-fab-button :class="[readytoSend() ? '' : 'disabled-fab-button']"
+                          :disabled="!readytoSend()" id="send-button" title="Envoyer ce trajet">
             <ion-icon :icon="navigateCircle"></ion-icon>
+          </ion-fab-button>
+          <ion-fab-button id="start-button" v-show ="!recordingTrip">
+            <ion-icon :icon="locate" title="Lancer un trajet"></ion-icon>
+          </ion-fab-button>
+
+          <ion-fab-button v-show ="recordingTrip" id="stop-button">
+            <ion-icon :icon="stopCircle" title="Arrêter ce trajet"></ion-icon>
           </ion-fab-button>
         </ion-fab-list>
       </ion-fab>
@@ -52,7 +55,7 @@
           trigger="start-button"
           :animated=true
           :backdrop-dismiss=false
-          header="Démarrer un trajet"
+          header="Nouveau trajet"
           :buttons="[
               {
                 text: 'Quitter',
@@ -93,6 +96,24 @@
               },
             ]"
       ></ion-alert>
+      <ion-alert
+          class="send-trip-alert"
+          trigger="send-button"
+          :animated=true
+          :header= "`Sauvegarder ${positions.length} positions recupérées?`"
+          :buttons="[
+              {
+                text: 'Supprimer',
+                cssClass: 'alert-button-cancel',
+                handler: resetPositions
+              },
+              {
+                text: 'Envoyer',
+                cssClass: 'alert-button-confirm',
+                handler: sendTrip
+              },
+            ]"
+      ></ion-alert>
       <ion-toast :is-open="toastInfo.isOpen" :message="toastInfo.message" :icon="informationCircle"
                  :duration="2000" @didDismiss="toastInfo.isOpen=false" class="toast-info"></ion-toast>
     </ion-content>
@@ -121,12 +142,10 @@ import {
   IonFab,
   IonFabButton,
   IonFabList,
-  IonMenu,
-  IonMenuButton,
-} from "@ionic/vue";
+  IonMenuButton } from "@ionic/vue";
 import {defineComponent, ref} from "vue";
 import {
-  add, exit, informationCircle, navigateCircle, stopCircle
+  add, exit, informationCircle, locate, navigateCircle, stopCircle
 } from "ionicons/icons";
 import {User} from "@/services/models";
 
@@ -148,7 +167,6 @@ export default defineComponent({
     IonFab,
     IonFabButton,
     IonFabList,
-    IonMenu,
     IonMenuButton,
   },
   async ionViewDidEnter() {
@@ -163,7 +181,7 @@ export default defineComponent({
     const recordingTrip = ref(false)
 
     return { positions, toastInfo, recordingTrip,
-      exit, add, navigateCircle, stopCircle, informationCircle};
+      exit, add, navigateCircle, stopCircle, informationCircle, locate};
   },
   methods: {
     async getCurrentPosition() {
@@ -184,8 +202,13 @@ export default defineComponent({
         return false
       }
 
+      this.resetPositions()
+
       this.tripName = data.tripName
       this.recordingTrip = true
+
+      this.toastInfo.message = "Trajet lancé! Capture des positions en cours..."
+      this.toastInfo.isOpen = true
 
       setInterval(() => {
         if(!this.recordingTrip)
@@ -194,28 +217,36 @@ export default defineComponent({
       }, 5000)
     },
 
-    async stopTrip() {
+    resetPositions(){
+      if(this.positions.length > 0){
+        this.positions.splice(0);
+      }
+      this.tripName = ""
+    },
+
+    stopTrip(){
       this.recordingTrip = false
+    },
 
+    async sendTrip() {
       //send positions to server
-      const response = await saveTrip(this.currentUser.userId, this.tripName, this.positions.map(pos => {
+      await saveTrip(this.currentUser.userId, this.tripName, this.positions.map(pos => {
         return {latitude: pos.latitude, longitude: pos.longitude}
       }))
 
-      console.log(this.positions.map(pos => {
-        return {latitude: pos.latitude, longitude: pos.longitude}
-      }))
-
-      this.toastInfo.message = `"Le trajet ${response.data.tripId} a été enregistré avec succès"`
+      this.toastInfo.message = `"Le trajet "${this.tripName}" a été enregistré avec succès"`
       this.toastInfo.isOpen = true
 
-      this.positions.splice(0);
+      this.resetPositions()
     },
 
     logout() {
       logoutUser();
       router.replace("/login");
     },
+    readytoSend() {
+      return !this.recordingTrip && this.positions.length > 0
+    }
   },
   data() {
     return {
@@ -280,7 +311,7 @@ ion-fab-list ion-fab-button{
   --background: var(--gris-sombre);
 }
 
-.start-trip-alert, .stop-trip-alert{
+.start-trip-alert, .stop-trip-alert, .send-trip-alert{
   --background: var(--noir);
 }
 
