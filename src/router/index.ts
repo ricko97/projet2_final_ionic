@@ -6,7 +6,7 @@ import SignupPage from "@/views/signupPage.vue";
 import LocationPage from "@/views/LocationPage.vue";
 import ParametrePage from "@/views/ParametrePage.vue";
 import TrajetPage from "@/views/TrajetPage.vue";
-import {isLoggedIn} from "@/services/user";
+import {getCurrentUser, isLoggedIn, logoutUser} from "@/services/user";
 import DetailsTrajetPage from "@/views/DetailsTrajetPage.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -53,8 +53,14 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const userLoggedIn = await isLoggedIn()
+  const currentUser = await getCurrentUser()
 
-  if ((to.path !== "/login" && to.path !== "/signup") && userLoggedIn.value == '0') {
+  console.log(userLoggedIn)
+  console.log(currentUser)
+  if((userLoggedIn.value == null || currentUser.value == null) && (to.path !== "/login" && to.path !== "/signup")) {
+    await logoutUser()
+    next({name: 'Login', replace: true})
+  }else if ((to.path !== "/login" && to.path !== "/signup") && userLoggedIn.value == '0') {
     next({name: 'Login', replace: true})
   }else if ((to.path === "/login" || to.path === "/signup") && userLoggedIn.value == '1') {
     next({name: 'GéoLocalisation', replace: true})
