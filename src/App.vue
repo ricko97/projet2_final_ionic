@@ -4,8 +4,8 @@
       <ion-menu content-id="main-content" type="overlay">
         <ion-content>
           <ion-list id="inbox-list">
-            <ion-list-header>Fullname</ion-list-header>
-            <ion-note>email@domain.com</ion-note>
+            <ion-list-header>{{ `${currentUser.firstName} ${currentUser.lastName}` }}</ion-list-header>
+            <ion-note>{{ currentUser.email }}</ion-note>
 
             <ion-menu-toggle
               :auto-hide="false"
@@ -19,7 +19,7 @@
                 lines="none"
                 :detail="false"
                 class="hydrated"
-                :class="{ selected: selectedIndex === i }"
+                :class="{ selected: selectedIndex == i }"
               >
                 <ion-icon
                   aria-hidden="true"
@@ -54,10 +54,10 @@ import {
   IonMenuToggle,
   IonNote,
   IonRouterOutlet,
-  IonSplitPane,
+  IonSplitPane, onIonViewDidEnter, onIonViewWillEnter,
 } from "@ionic/vue";
-import {ref} from "vue";
-import router from "@/router";
+import {onMounted, onUpdated, ref} from "vue";
+//import router from "@/router";
 import {
   settingsSharp,
   settingsOutline,
@@ -67,7 +67,8 @@ import {
   listSharp,
 } from "ionicons/icons";
 import {getCurrentUser, isLoggedIn} from "@/services/user";
-import {LoginResponse} from "@/services/models";
+import {useRouter} from "vue-router";
+import {User} from "@/services/models";
 
 const selectedIndex = ref(0);
 const appPages = [
@@ -91,18 +92,25 @@ const appPages = [
   },
 ];
 
-const path = router.currentRoute.value.path;
-console.log(router.currentRoute.value.path);
-if (path !== undefined) {
-  selectedIndex.value = appPages.findIndex(
-    (page) => page.url.toLowerCase() === path.toLowerCase()
-  );
-}
+const router = useRouter();
+const userLoggedIn = ref('0')
+const currentUser = ref({})
 
-const hideMenu = () => isLoggedIn().then(isLoggedIn => {
-    return isLoggedIn.value != '1';
-  })
+onMounted(async () => {
+  let res = await getCurrentUser()
+  currentUser.value = JSON.parse(res.value)
 
+  const path = router.currentRoute.value.path
+  console.log(router.currentRoute.value.path);
+  if (path !== '') {
+    selectedIndex.value = appPages.findIndex(
+        (page) => page.url.toLowerCase() == path.toLowerCase()
+    );
+  }
+
+    res = await isLoggedIn()
+    userLoggedIn.value = res.value
+})
 
 </script>
 

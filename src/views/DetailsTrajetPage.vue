@@ -1,11 +1,21 @@
 <script lang="ts">
-import {IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/vue";
+import {
+  alertController,
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonHeader, IonIcon,
+  IonPage,
+  IonTitle, IonToast,
+  IonToolbar
+} from "@ionic/vue";
 import {defineComponent, ref} from "vue";
 import L from 'leaflet'
-import {getTripsByUserId} from "@/services/api";
+import {getTripsByUserId, shareTrip} from "@/services/api";
 import {getCurrentUser} from "@/services/user";
 import {Trip, User} from "@/services/models";
 import router from "@/router";
+import {informationCircle, shareSocial} from "ionicons/icons";
 
 export default defineComponent({
   computed: {
@@ -14,6 +24,8 @@ export default defineComponent({
     }
   },
   components: {
+    IonIcon,
+    IonToast,
     IonBackButton,
     IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar
   },
@@ -43,10 +55,56 @@ export default defineComponent({
   },
   setup(){
     const currentTrip : Trip = ref({})
+    const toastInfo = ref({isOpen : false, message: ''})
+
     return {
-      currentTrip
+      currentTrip, toastInfo
     }
   },
+  methods: {
+    shareSocial() {
+      return shareSocial
+    },
+    informationCircle() {
+      return informationCircle
+    },
+    async showShareAlert(tripId: string) {
+      const alert = await alertController.create({
+        header: 'Partage du trajet',
+        buttons: [
+          {
+            text: 'Annuler',
+            cssClass: 'alert-button-cancel',
+          },
+          {
+            text: 'Partager',
+            cssClass: 'alert-button-confirm',
+            handler: (data) => this.shareTrip(tripId, data)
+          },
+        ],
+        inputs: [{
+          placeholder: 'Email du récepteur',
+          cssClass: 'trajet-input',
+          name: 'userEmail',
+          type: 'email'
+        }]
+      });
+      await alert.present()
+    },
+    shareTrip(tripId: string, data){
+      if (!data.userEmail || data.userEmail.trim() === '') {
+        this.toastInfo.message = "Veuillez saisir l'email du récepteur"
+        this.toastInfo.isOpen = true
+        return false
+      }
+      shareTrip(tripId, data.userEmail).then((res) => {
+        if(res.status == 200) {
+          this.toastInfo.message = `Le trajet a été partagé avec ${data.userEmail}`
+          this.toastInfo.isOpen = true
+        }
+      })
+    },
+  }
 })
 </script>
 
@@ -58,12 +116,19 @@ export default defineComponent({
           <ion-menu-button></ion-menu-button>
           <ion-back-button default-href="/trips"></ion-back-button>
         </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button class="logout-button" @click="showShareAlert(tripId)">
+            <ion-icon slot="start" aria-hidden="true" :ios="shareSocial()" :md="shareSocial()"></ion-icon>
+            Partager</ion-button>
+        </ion-buttons>
         <ion-title>Details du trajet "{{currentTrip.pathName}}"</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content id="content" :fullscreen="true">
       <div id="map" style="height: 100vh;"></div>
     </ion-content>
+    <ion-toast :is-open="toastInfo.isOpen" :message="toastInfo.message" :icon="informationCircle()"
+               :duration="2000" @didDismiss="toastInfo.isOpen=false" class="toast-info"></ion-toast>
   </ion-page>
 </template>
 

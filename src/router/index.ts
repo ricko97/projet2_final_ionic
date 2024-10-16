@@ -55,8 +55,6 @@ router.beforeEach(async (to, from, next) => {
   const userLoggedIn = await isLoggedIn()
   const currentUser = await getCurrentUser()
 
-  console.log(userLoggedIn)
-  console.log(currentUser)
   if((userLoggedIn.value == null || currentUser.value == null) && (to.path !== "/login" && to.path !== "/signup")) {
     await logoutUser()
     next({name: 'Login', replace: true})

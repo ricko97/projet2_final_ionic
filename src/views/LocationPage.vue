@@ -134,6 +134,8 @@ import {
   IonFab,
   IonFabButton,
   IonFabList,
+  IonListHeader,
+  IonSpinner,
   IonMenuButton } from "@ionic/vue";
 import {defineComponent, ref} from "vue";
 import {
@@ -159,6 +161,8 @@ export default defineComponent({
     IonFabButton,
     IonFabList,
     IonMenuButton,
+    IonListHeader,
+    IonSpinner,
   },
   async ionViewDidEnter() {
 
