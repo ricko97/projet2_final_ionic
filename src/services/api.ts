@@ -68,7 +68,7 @@ export const changePassword = async (
     oldPassword: string,
     newPassword: string
 ): Promise<AxiosResponse<MsgResponse>> => {
-  return await axios.post(`${API_URL}/change-password`, {
+  return await axios.put(`${API_URL}/change-password`, {
     userId,
     oldPassword,
     newPassword,
