@@ -16,7 +16,6 @@ import {getCurrentUser} from "@/services/user";
 import {Trip, User} from "@/services/models";
 import router from "@/router";
 import {informationCircle, shareSocial} from "ionicons/icons";
-import SideMenu from "@/components/side-menu.vue";
 
 export default defineComponent({
   computed: {
@@ -25,7 +24,6 @@ export default defineComponent({
     }
   },
   components: {
-    SideMenu,
     IonIcon,
     IonToast,
     IonBackButton,
@@ -33,9 +31,9 @@ export default defineComponent({
   },
   async ionViewDidEnter() {
     const user = await getCurrentUser()
-    this.currentUser = JSON.parse(user.value)
+    const currentUser = JSON.parse(user.value)
 
-    const res = await getTripsByUserId(this.currentUser.userId, this.tripId)
+    const res = await getTripsByUserId(currentUser.userId, this.tripId)
     this.currentTrip = res.data.trips.concat(res.data.sharedTrips).findLast((trip) => {
       return trip.tripId === this.tripId
     })
@@ -64,11 +62,6 @@ export default defineComponent({
       marker.bindPopup(`<b>Position ${index}</b><br>Latitude: ${pos.latitude},
             Longitude: ${pos.longitude}`).openPopup();
     });
-  },
-  data() {
-    return {
-      currentUser : {} as User
-    };
   },
   setup(){
     const currentTrip : Trip = ref({})
@@ -127,14 +120,10 @@ export default defineComponent({
 
 <template>
   <ion-page>
-    <ion-split-pane content-id="main-content">
-      <side-menu :email="currentUser.email" :lastname="currentUser.lastName"
-                 :firstname="currentUser.firstName" />
       <ion-content id="content" :fullscreen="true">
         <ion-header :translucent="true">
           <ion-toolbar>
             <ion-buttons slot="start">
-              <ion-menu-button></ion-menu-button>
               <ion-back-button default-href="/trips"></ion-back-button>
             </ion-buttons>
             <ion-buttons slot="end">
@@ -147,7 +136,6 @@ export default defineComponent({
         </ion-header>
         <div id="map" style="height: 100vh;"></div>
       </ion-content>
-    </ion-split-pane>
 
     <ion-toast :is-open="toastInfo.isOpen" :message="toastInfo.message" :icon="informationCircle()"
                :duration="2000" @didDismiss="toastInfo.isOpen=false" class="toast-info"></ion-toast>
