@@ -14,7 +14,7 @@ import {
   IonItem,
   IonLabel,
   IonInput,
-  IonButton, IonIcon, IonToast
+  IonButton, IonIcon
 } from "@ionic/vue";
 import { defineComponent, ref, onMounted } from "vue";
 import { updateUser, changePassword } from "@/services/api";
@@ -35,7 +35,6 @@ export default defineComponent({
     }
   },
   components: {
-    IonToast,
     SideMenu,
     IonIcon,
     IonButtons,
@@ -163,10 +162,10 @@ export default defineComponent({
 
 <template>
   <ion-page>
-    <ion-split-pane content-id="main-content">
+    <ion-split-pane>
       <side-menu :email="currentUser.email" :lastname="currentUser.lastName"
                  :firstname="currentUser.firstName" />
-      <ion-content id="content" :fullscreen="true">
+      <ion-content id="main-content" :fullscreen="true">
         <ion-header :translucent="true">
           <ion-toolbar>
             <ion-buttons slot="start">

@@ -1,8 +1,9 @@
 <template>
-
     <ion-page>
-      <ion-split-pane content-id="main-content">
-        <ion-content id="content" fixed-slot-placement="before">
+      <ion-split-pane>
+        <side-menu :email="currentUser.email" :lastname="currentUser.lastName"
+                                                           :firstname="currentUser.firstName" />
+        <ion-content id="main-content" fixed-slot-placement="before">
           <ion-header :translucent="true">
           <ion-toolbar>
             <ion-buttons slot="start">
@@ -113,8 +114,7 @@
           <ion-toast :is-open="toastInfo.isOpen" :message="toastInfo.message" :icon="informationCircle"
                      :duration="2000" @didDismiss="toastInfo.isOpen=false" class="toast-info"></ion-toast>
         </ion-content>
-    <side-menu :email="currentUser.email" :lastname="currentUser.lastName"
-               :firstname="currentUser.firstName" />
+
 
   </ion-split-pane>
     </ion-page>

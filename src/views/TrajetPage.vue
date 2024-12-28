@@ -160,22 +160,23 @@ export default defineComponent({
 
 <template>
   <ion-page>
-    <ion-split-pane content-id="main-content">
+    <ion-split-pane>
       <side-menu :email="currentUser.email" :lastname="currentUser.lastName"
                  :firstname="currentUser.firstName" />
-      <ion-content id="content" >
+      <ion-content id="main-content">
         <ion-tabs>
           <ion-tab tab="trips">
             <div id="trips-page">
-              <ion-header>
-                <ion-toolbar>
-                  <ion-title>Mes Trajets</ion-title>
-                  <ion-buttons slot="start">
-                    <ion-menu-button></ion-menu-button>
-                  </ion-buttons>
-                </ion-toolbar>
-              </ion-header>
+
               <ion-content :fullscreen="true">
+                <ion-header>
+                  <ion-toolbar>
+                    <ion-title>Mes Trajets</ion-title>
+                    <ion-buttons slot="start">
+                      <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                  </ion-toolbar>
+                </ion-header>
                 <ion-refresher slot="fixed" @ionRefresh="handleRefresh(refreshTrips,$event)">
                   <ion-refresher-content></ion-refresher-content>
                 </ion-refresher>
