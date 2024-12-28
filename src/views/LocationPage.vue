@@ -1,56 +1,58 @@
 <template>
-  <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar>
-          <ion-buttons slot="start">
-            <ion-menu-button></ion-menu-button>
-          </ion-buttons>
-        <ion-title>GéoLocalisation</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content id="content" fixed-slot-placement="before">
-      <ion-list id="trip-positions" v-if="positions.length > 0">
-        <ion-list-header>
-          <ion-label>{{positions.length}} Positions capturées </ion-label>
-        </ion-list-header>
-        <ion-item class="pos-list-item" v-for="(position, index) in positions" :key="index">
-          <ion-label>
-            <h3>
-              Lat: {{ position.latitude }}, Lon:
-              {{ position.longitude }}
-            </h3>
-            <p>
-              {{ position.address }}
-            </p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-      <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-        <ion-fab-button id="new-trip">
-          <ion-icon :icon="add" v-show="!recordingTrip" ></ion-icon>
-          <ion-spinner name="circular" v-if="recordingTrip"></ion-spinner>
-        </ion-fab-button>
-        <ion-fab-list side="top">
-          <ion-fab-button :class="[readytoSend() ? '' : 'disabled-fab-button']"
-                          :disabled="!readytoSend()" id="send-button" title="Envoyer ce trajet">
-            <ion-icon :icon="navigateCircle"></ion-icon>
-          </ion-fab-button>
-          <ion-fab-button id="start-button" v-show ="!recordingTrip">
-            <ion-icon :icon="locate" title="Lancer un trajet"></ion-icon>
-          </ion-fab-button>
 
-          <ion-fab-button v-show ="recordingTrip" id="stop-button">
-            <ion-icon :icon="stopCircle" title="Arrêter ce trajet"></ion-icon>
-          </ion-fab-button>
-        </ion-fab-list>
-      </ion-fab>
-      <ion-alert
-          class="start-trip-alert"
-          trigger="start-button"
-          :animated=true
-          :backdrop-dismiss=false
-          header="Nouveau trajet"
-          :buttons="[
+    <ion-page>
+      <ion-split-pane content-id="main-content">
+        <ion-content id="content" fixed-slot-placement="before">
+          <ion-header :translucent="true">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+            </ion-buttons>
+            <ion-title>GéoLocalisation</ion-title>
+          </ion-toolbar>
+        </ion-header>
+          <ion-list id="trip-positions" v-if="positions.length > 0">
+            <ion-list-header>
+              <ion-label>{{positions.length}} Positions capturées </ion-label>
+            </ion-list-header>
+            <ion-item class="pos-list-item" v-for="(position, index) in positions" :key="index">
+              <ion-label>
+                <h3>
+                  Lat: {{ position.latitude }}, Lon:
+                  {{ position.longitude }}
+                </h3>
+                <p>
+                  {{ position.address }}
+                </p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+          <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+            <ion-fab-button id="new-trip">
+              <ion-icon :icon="add" v-show="!recordingTrip" ></ion-icon>
+              <ion-spinner name="circular" v-if="recordingTrip"></ion-spinner>
+            </ion-fab-button>
+            <ion-fab-list side="top">
+              <ion-fab-button :class="[readytoSend() ? '' : 'disabled-fab-button']"
+                              :disabled="!readytoSend()" id="send-button" title="Envoyer ce trajet">
+                <ion-icon :icon="navigateCircle"></ion-icon>
+              </ion-fab-button>
+              <ion-fab-button id="start-button" v-show ="!recordingTrip">
+                <ion-icon :icon="locate" title="Lancer un trajet"></ion-icon>
+              </ion-fab-button>
+
+              <ion-fab-button v-show ="recordingTrip" id="stop-button">
+                <ion-icon :icon="stopCircle" title="Arrêter ce trajet"></ion-icon>
+              </ion-fab-button>
+            </ion-fab-list>
+          </ion-fab>
+          <ion-alert
+              class="start-trip-alert"
+              trigger="start-button"
+              :animated=true
+              :backdrop-dismiss=false
+              header="Nouveau trajet"
+              :buttons="[
               {
                 text: 'Quitter',
                 cssClass: 'alert-button-cancel',
@@ -61,7 +63,7 @@
                 handler: startTrip
               },
             ]"
-          :inputs="[{
+              :inputs="[{
             placeholder: 'Nom du trajet',
             cssClass : 'trajet-input',
             name: 'tripName',
@@ -71,14 +73,14 @@
               this.tripName = data.inputField;
             }
           }]"
-      ></ion-alert>
-      <ion-alert
-          class="stop-trip-alert"
-          trigger="stop-button"
-          :animated=true
-          :backdrop-dismiss=false
-          header="Arrêter le trajet en cours?"
-          :buttons="[
+          ></ion-alert>
+          <ion-alert
+              class="stop-trip-alert"
+              trigger="stop-button"
+              :animated=true
+              :backdrop-dismiss=false
+              header="Arrêter le trajet en cours?"
+              :buttons="[
               {
                 text: 'Non',
                 cssClass: 'alert-button-cancel',
@@ -89,13 +91,13 @@
                 handler: stopTrip
               },
             ]"
-      ></ion-alert>
-      <ion-alert
-          class="send-trip-alert"
-          trigger="send-button"
-          :animated=true
-          :header= "`Sauvegarder ${positions.length} positions recupérées?`"
-          :buttons="[
+          ></ion-alert>
+          <ion-alert
+              class="send-trip-alert"
+              trigger="send-button"
+              :animated=true
+              :header= "`Sauvegarder ${positions.length} positions recupérées?`"
+              :buttons="[
               {
                 text: 'Supprimer',
                 cssClass: 'alert-button-cancel',
@@ -107,11 +109,16 @@
                 handler: sendTrip
               },
             ]"
-      ></ion-alert>
-      <ion-toast :is-open="toastInfo.isOpen" :message="toastInfo.message" :icon="informationCircle"
-                 :duration="2000" @didDismiss="toastInfo.isOpen=false" class="toast-info"></ion-toast>
-    </ion-content>
-  </ion-page>
+          ></ion-alert>
+          <ion-toast :is-open="toastInfo.isOpen" :message="toastInfo.message" :icon="informationCircle"
+                     :duration="2000" @didDismiss="toastInfo.isOpen=false" class="toast-info"></ion-toast>
+        </ion-content>
+    <side-menu :email="currentUser.email" :lastname="currentUser.lastName"
+               :firstname="currentUser.firstName" />
+
+  </ion-split-pane>
+    </ion-page>
+
 </template>
 
 <script lang="ts">
@@ -142,9 +149,11 @@ import {
   add, exit, informationCircle, locate, navigateCircle, stopCircle
 } from "ionicons/icons";
 import {User} from "@/services/models";
+import SideMenu from "@/components/side-menu.vue";
 
 export default defineComponent({
   components: {
+    SideMenu,
     IonContent,
     IonHeader,
     IonPage,
@@ -197,13 +206,16 @@ export default defineComponent({
         this.toastInfo.isOpen = true
         return false
       }
+      this.resetPositions()
+
       this.tripName = data.tripName
       this.recordingTrip = true
 
       this.toastInfo.message = "Trajet lancé! Capture des positions en cours..."
       this.toastInfo.isOpen = true
 
-      this.resetPositions()
+      //Reset Traject name field
+      data.tripName = ''
 
       setInterval(() => {
         if(!this.recordingTrip)
@@ -216,6 +228,7 @@ export default defineComponent({
       if(this.positions.length > 0){
         this.positions.splice(0);
       }
+
       this.tripName = ""
     },
 

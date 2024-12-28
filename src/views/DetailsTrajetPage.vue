@@ -16,6 +16,7 @@ import {getCurrentUser} from "@/services/user";
 import {Trip, User} from "@/services/models";
 import router from "@/router";
 import {informationCircle, shareSocial} from "ionicons/icons";
+import SideMenu from "@/components/side-menu.vue";
 
 export default defineComponent({
   computed: {
@@ -24,16 +25,17 @@ export default defineComponent({
     }
   },
   components: {
+    SideMenu,
     IonIcon,
     IonToast,
     IonBackButton,
     IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar
   },
   async ionViewDidEnter() {
-    let currentUser: User = await getCurrentUser()
-    currentUser = JSON.parse(currentUser.value)
+    const user = await getCurrentUser()
+    this.currentUser = JSON.parse(user.value)
 
-    const res = await getTripsByUserId(currentUser.userId, this.tripId)
+    const res = await getTripsByUserId(this.currentUser.userId, this.tripId)
     this.currentTrip = res.data.trips.concat(res.data.sharedTrips).findLast((trip) => {
       return trip.tripId === this.tripId
     })
@@ -47,11 +49,26 @@ export default defineComponent({
       attribution: 'Projet 2 Ionic'
     }).addTo(map);
 
+    const mapIcon = L.icon({
+      iconUrl: 'marker-icon-2x.png',
+      iconSize: [28, 40],
+      iconAnchor: [12, 44],
+      popupAnchor: [-3, -36],
+      shadowUrl: 'marker-shadow.png',
+      shadowSize: [58, 40],
+      shadowAnchor: [12,44]
+    });
+
     this.currentTrip.locations.forEach((pos, index) => {
-      const marker = L.marker([pos.latitude, pos.longitude]).addTo(map);
+      const marker = L.marker([pos.latitude, pos.longitude], {icon: mapIcon}).addTo(map);
       marker.bindPopup(`<b>Position ${index}</b><br>Latitude: ${pos.latitude},
             Longitude: ${pos.longitude}`).openPopup();
     });
+  },
+  data() {
+    return {
+      currentUser : {} as User
+    };
   },
   setup(){
     const currentTrip : Trip = ref({})
@@ -110,23 +127,28 @@ export default defineComponent({
 
 <template>
   <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-menu-button></ion-menu-button>
-          <ion-back-button default-href="/trips"></ion-back-button>
-        </ion-buttons>
-        <ion-buttons slot="end">
-          <ion-button class="logout-button" @click="showShareAlert(tripId)">
-            <ion-icon slot="start" aria-hidden="true" :ios="shareSocial()" :md="shareSocial()"></ion-icon>
-            Partager</ion-button>
-        </ion-buttons>
-        <ion-title>Details du trajet "{{currentTrip.pathName}}"</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content id="content" :fullscreen="true">
-      <div id="map" style="height: 100vh;"></div>
-    </ion-content>
+    <ion-split-pane content-id="main-content">
+      <side-menu :email="currentUser.email" :lastname="currentUser.lastName"
+                 :firstname="currentUser.firstName" />
+      <ion-content id="content" :fullscreen="true">
+        <ion-header :translucent="true">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+              <ion-back-button default-href="/trips"></ion-back-button>
+            </ion-buttons>
+            <ion-buttons slot="end">
+              <ion-button class="logout-button" @click="showShareAlert(tripId)">
+                <ion-icon slot="start" aria-hidden="true" :ios="shareSocial()" :md="shareSocial()"></ion-icon>
+                Partager</ion-button>
+            </ion-buttons>
+            <ion-title>Details du trajet "{{currentTrip.pathName}}"</ion-title>
+          </ion-toolbar>
+        </ion-header>
+        <div id="map" style="height: 100vh;"></div>
+      </ion-content>
+    </ion-split-pane>
+
     <ion-toast :is-open="toastInfo.isOpen" :message="toastInfo.message" :icon="informationCircle()"
                :duration="2000" @didDismiss="toastInfo.isOpen=false" class="toast-info"></ion-toast>
   </ion-page>
