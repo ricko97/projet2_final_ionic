@@ -20,7 +20,7 @@ The aim is to enable users to manage their routes, visualize them on a map, shar
 <img src="https://drive.usercontent.google.com/download?id=1ldJQJahSQxVfQM0eMDGeVMkj6iw_tTRE" alt="My routes" width="300"/>
 <img src="https://drive.usercontent.google.com/download?id=1liEEUqMDnvTiHpw9w4PMozlziKiH1Bn8" alt="Shared routes" width="300"/>
 <img src="https://drive.usercontent.google.com/download?id=1lqA7BP11-L5H00GO7SPLYs8GN8t92f2F" alt="Settings" width="300"/>
-<img src="https://drive.usercontent.google.com/download?id=1EU1jBxj8nKfvCaAzdeq1yafPEGrimcg8k" alt="Map view" width="300"/>
+<img src="https://drive.usercontent.google.com/download?id=1lw3OGcDbEbEACXGjILyAGufARLbPrG4E" alt="Map view" width="300"/>
 <img src="https://drive.usercontent.google.com/download?id=1lpW6Ti2SlC2PChUI3op8Wo6MrxVBOB70" alt="Share route form" width="300"/></p>
 
 ---
