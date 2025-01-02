@@ -1,6 +1,6 @@
 # Application for managing and sharing routes
 
-The aim is to enable users to manage their journeys, visualize them on a map, share them with other other users, and add new routes by recording GPS positions.
+The aim is to enable users to manage their routes, visualize them on a map, share them with other other users, and add new routes by recording GPS positions.
 
 ---
 
@@ -30,5 +30,5 @@ The aim is to enable users to manage their journeys, visualize them on a map, sh
 
 ### Prerequisites
 
-- Node.js, npm, Ionic
+- Node.js, npm, @ionic/cli
 
