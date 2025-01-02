@@ -14,14 +14,14 @@ The aim is to enable users to manage their journeys, visualize them on a map, sh
 
 ## Demo screenshots
 
-![Login page](https://drive.usercontent.google.com/download?id=1lrwZiu9V2yChAjfq6LfHuAU8L3RHycDN)
-![Getting GPS position](https://drive.google.com/file/d/1m1yAENHwD22OoYsefMhFtYdzGKZ0VABV/view?usp=drive_link)
-![Menu](https://drive.google.com/file/d/1lfspmaUlfr5Ho4f8jYEUwLbJdN6KqRoL/view?usp=sharing)
-![My routes](https://drive.google.com/file/d/1ldJQJahSQxVfQM0eMDGeVMkj6iw_tTRE/view?usp=sharing)
-![Shared routes](https://drive.google.com/file/d/1liEEUqMDnvTiHpw9w4PMozlziKiH1Bn8/view?usp=sharing)
-![Settings](https://drive.google.com/file/d/1lqA7BP11-L5H00GO7SPLYs8GN8t92f2F/view?usp=sharing)
-![Map view](https://drive.google.com/file/d/1liEEUqMDnvTiHpw9w4PMozlziKiH1Bn8/view?usp=sharing)
-![Share route form](https://drive.google.com/file/d/1lpW6Ti2SlC2PChUI3op8Wo6MrxVBOB70/view?usp=sharing)
+<p><img src="https://drive.usercontent.google.com/download?id=1lrwZiu9V2yChAjfq6LfHuAU8L3RHycDN" alt="Login page" width="300"/>
+<img src="https://drive.usercontent.google.com/download?id=1m1yAENHwD22OoYsefMhFtYdzGKZ0VABV" alt="Getting GPS position" width="300"/>
+<img src="https://drive.usercontent.google.com/download?id=1lfspmaUlfr5Ho4f8jYEUwLbJdN6KqRoL" alt="Menu" width="300"/>
+<img src="https://drive.usercontent.google.com/download?id=1ldJQJahSQxVfQM0eMDGeVMkj6iw_tTRE" alt="My routes" width="300"/>
+<img src="https://drive.usercontent.google.com/download?id=1liEEUqMDnvTiHpw9w4PMozlziKiH1Bn8" alt="Shared routes" width="300"/>
+<img src="https://drive.usercontent.google.com/download?id=1lqA7BP11-L5H00GO7SPLYs8GN8t92f2F" alt="Settings" width="300"/>
+<img src="https://drive.usercontent.google.com/download?id=1liEEUqMDnvTiHpw9w4PMozlziKiH1Bn8" alt="Map view" width="300"/>
+<img src="https://drive.usercontent.google.com/download?id=1lpW6Ti2SlC2PChUI3op8Wo6MrxVBOB70" alt="Share route form" width="300"/></p>
 
 
 ---
